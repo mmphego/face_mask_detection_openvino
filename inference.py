@@ -22,7 +22,6 @@ class Network:
         self.exec_network = None
         self._input_blob = None
         self._output_blob = None
-        self.infer_request = None
 
     def load_model(
         self, model_xml: str, device: str = "CPU", cpu_extension=None
@@ -95,7 +94,7 @@ class Network:
             request_id=request_id, inputs={self._input_blob: image}
         )
 
-    def wait(self, request_id: int = 0):
+    def wait(self, request_id: int = 0) -> int:
         """Checks the status of the inference request."""
         status = self.exec_network.requests[request_id].wait(-1)
         return status
