@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 
 import time
+import os
 
 from argparse import ArgumentParser
 
@@ -12,7 +13,7 @@ from responsive_voice.voices import UKEnglishMale
 from inference import Network
 
 engine = UKEnglishMale()
-mp3_file = engine.get_mp3("Please wear your MASK, or you will become a statistic!!")
+mp3_file = engine.get_mp3("Please wear your MASK!!")
 
 
 def arg_parser():
@@ -85,7 +86,6 @@ def draw_boxes(frame, f_result, m_result, count, prob_threshold, width, height):
             ymax = int(box[6] * height)
             _y = ymax + loc if ymax + loc > loc else ymax - loc
 
-            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), (0, 0, 255), 1)
             detected_threshold = round(float(m_result.flatten()), 3)
             if detected_threshold > 0.3:
                 label = ("Mask", (0, 255, 0))  # Color format: BGR
@@ -93,6 +93,7 @@ def draw_boxes(frame, f_result, m_result, count, prob_threshold, width, height):
                 label = ("No Mask", (0, 0, 255))
                 if int(count) % 200 == 1:
                     engine.play_mp3(mp3_file)
+            cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), label[1], 1)
             cv2.putText(
                 frame,
                 f"{label[0]}: {detected_threshold :.2f}%",
