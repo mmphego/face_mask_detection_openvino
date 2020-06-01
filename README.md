@@ -7,7 +7,23 @@ Face Mask Detection Platform uses Artificial Network to recognize if a user is n
 
 ![Screenshot from 2020-06-01 22-21-47](https://user-images.githubusercontent.com/7910856/83451683-a8d71780-a457-11ea-8eae-185725fefcc9.png)
 
+**What is OpenVino?**
+
+OpenVino (OpenVisual Inferencing and Neural Network Optimization) is toolkit to develop Deep Learning Application especially for Computer Vision by Intel. OpenVino Enables deep learning inference at the edge and supports heterogeneous execution across computer vision accelerators—CPU, GPU, Intel® Movidius™ Neural Compute Stick, and FPGA—using a common API. [read more](https://docs.openvinotoolkit.org/)
+
+You might also be interested on reading about [AI At The Edge - An Introduction To Intel OpenVINO Toolkit.](https://blog.mphomphego.co.za/blog/2020/05/25/AI-at-the-Edge-An-introduction-to-Intel-OpenVINO-Toolkit.html)
+
+## Hardware Requirement
+
+- Minimum Intel Gen6 processors
+
+
 ## Installation
+
+- Download the docker images with a pre-installed version of OpenVINO 2020.2
+```bash
+docker pull mmphego/intel-openvino
+```
 
 - Download the facemask detection model.
 ```bash
