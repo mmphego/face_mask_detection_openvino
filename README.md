@@ -35,9 +35,9 @@ docker run --rm -ti \
 --env DISPLAY=$DISPLAY \
 --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
 mmphego/intel-openvino \
-bash -c "/opt/intel/openvino/deployment_tools/open_model_zoo/tools/downloader/downloader.py" \
---name face-detection-adas-0001 \
---precision FP16
+bash -c "/opt/intel/openvino/deployment_tools/open_model_zoo/tools/downloader/downloader.py \
+    --name face-detection-adas-0001 \
+    --precision FP16"
 ```
 
 ## Usage
