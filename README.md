@@ -3,7 +3,17 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![OpenVINO 2020.2](https://img.shields.io/badge/openvino-2020.2-blue.svg)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html)
 
-Face Mask Detection Platform uses Artificial Network to recognize if a user is not wearing a mask and issues an alert.
+Face Mask Detection application uses Deep Learning/Machine Learning to recognize if a user is not wearing a mask and issues an alert.
+
+By utilizing pre-trained models and Intel OpenVINO toolkit with OpenCV. This enables us to use the async API which can improve overall frame-rate of the application, rather than wait for inference to complete, the application can continue operating on the host while accelerator is busy.
+
+This application executes 2 parallel infer requests for the Face Mask Detection and Face Detection networks that run simultaneously.
+
+Using a set of the following pre-trained models:
+- face-detection-adas-0001, which is a primary detection network for finding faces.
+- face-mask-detection, which is a pretrained model for detecting a mask.
+
+This application can be improved and then integrated with CCTV or other types cameras to detect and identify people without masks in public areas such as shopping centers and etc. This the ever increasing COVID-19 cases world-wide these application could be useful in controlling the spread of the virus.
 
 ![Screenshot from 2020-06-01 22-21-47](https://user-images.githubusercontent.com/7910856/83451683-a8d71780-a457-11ea-8eae-185725fefcc9.png)
 
@@ -82,6 +92,12 @@ xhost -;
 - `--device /dev/snd`: Enable sound from container
 - `--device /dev/video0`: Share webcam with container
 
+{:refdef: style="text-align: center;"}
+[![smaller.gif](https://i.postimg.cc/Y2JbSRJC/smaller.gif)](https://postimg.cc/w3QhfXqC)
+{: refdef}
+
+
 ## Credit
 
 - Face mask detection caffe model: [https://github.com/didi/maskdetection](https://github.com/didi/maskdetection)
+- [COVID-19: Face Mask Detector with OpenCV, Keras/TensorFlow, and Deep Learning by Adrian Rosebrock ](https://www.pyimagesearch.com/2020/05/04/covid-19-face-mask-detector-with-opencv-keras-tensorflow-and-deep-learning/)
