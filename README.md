@@ -92,9 +92,8 @@ xhost -;
 - `--device /dev/snd`: Enable sound from container
 - `--device /dev/video0`: Share webcam with container
 
-{:refdef: style="text-align: center;"}
-[![smaller.gif](https://i.postimg.cc/Y2JbSRJC/smaller.gif)](https://postimg.cc/w3QhfXqC)
-{: refdef}
+
+<p style="text-align: center;"><a href="https://postimg.cc/w3QhfXqC"><img src="https://i.postimg.cc/Y2JbSRJC/smaller.gif" alt="smaller.gif" /></a></p>
 
 
 ## Credit
