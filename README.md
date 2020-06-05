@@ -24,6 +24,18 @@ OpenVino (OpenVisual Inferencing and Neural Network Optimization) is toolkit to 
 
 You might also be interested on reading about [AI At The Edge - An Introduction To Intel OpenVINO Toolkit.](https://blog.mphomphego.co.za/blog/2020/05/25/AI-at-the-Edge-An-introduction-to-Intel-OpenVINO-Toolkit.html)
 
+
+### Tutorial
+#### Blog Post
+
+I have created a detailed blogpost on the implemetation: https://blog.mphomphego.co.za/blog/2020/06/02/Face-Mask-Detection-using-Intel-OpenVINO-and-OpenCV.html
+
+#### YouTube Tutorial
+
+The first of many...
+
+[![Watch the video](https://img.youtube.com/vi/6r6foGbCHQ0/maxresdefault.jpg)](https://www.youtube.com/watch?v=6r6foGbCHQ0)
+
 ## Hardware Requirement
 
 - Minimum Intel Gen6 processors
