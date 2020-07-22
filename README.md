@@ -1,7 +1,15 @@
 # Face Mask Detection using OpenVINO
 
-[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
-[![OpenVINO 2020.2](https://img.shields.io/badge/openvino-2020.2-blue.svg)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html)
+| Details            |              |
+|-----------------------|---------------|
+| Programming Language: |  [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/) |
+| Intel OpenVINO ToolKit: |[![OpenVINO 2020.2](https://img.shields.io/badge/openvino-2020.2-blue.svg)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html)|
+| Docker (Ubuntu OpenVINO pre-installed): | [mmphego/intel-openvino](https://hub.docker.com/r/mmphego/intel-openvino)|
+| Hardware Used: | Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz |
+| Device: | CPU |
+| Blog Post | [![blogpost](https://img.shields.io/badge/BlogPost-Link-brightgreen)](https://blog.mphomphego.co.za/blog/2020/06/02/Face-Mask-Detection-using-Intel-OpenVINO-and-OpenCV.html) |
+| Visitors | ![](https://visitor-badge.laobi.icu/badge?page_id=mmphego.face_mask_detection_openvino)|
+
 
 Face Mask Detection application uses Deep Learning/Machine Learning to recognize if a user is not wearing a mask and issues an alert.
 
@@ -22,6 +30,18 @@ This application can be improved and then integrated with CCTV or other types ca
 OpenVino (OpenVisual Inferencing and Neural Network Optimization) is toolkit to develop Deep Learning Application especially for Computer Vision by Intel. OpenVino Enables deep learning inference at the edge and supports heterogeneous execution across computer vision accelerators—CPU, GPU, Intel® Movidius™ Neural Compute Stick, and FPGA—using a common API. [read more](https://docs.openvinotoolkit.org/)
 
 You might also be interested on reading about [AI At The Edge - An Introduction To Intel OpenVINO Toolkit.](https://blog.mphomphego.co.za/blog/2020/05/25/AI-at-the-Edge-An-introduction-to-Intel-OpenVINO-Toolkit.html)
+
+
+### Tutorial
+#### Blog Post
+
+I have created a detailed blogpost on the implemetation: https://blog.mphomphego.co.za/blog/2020/06/02/Face-Mask-Detection-using-Intel-OpenVINO-and-OpenCV.html
+
+#### YouTube Tutorial
+
+The first of many...
+
+[![Watch the video](https://img.youtube.com/vi/6r6foGbCHQ0/maxresdefault.jpg)](https://www.youtube.com/watch?v=6r6foGbCHQ0)
 
 ## Hardware Requirement
 
@@ -92,9 +112,8 @@ xhost -;
 - `--device /dev/snd`: Enable sound from container
 - `--device /dev/video0`: Share webcam with container
 
-{:refdef: style="text-align: center;"}
-[![smaller.gif](https://i.postimg.cc/Y2JbSRJC/smaller.gif)](https://postimg.cc/w3QhfXqC)
-{: refdef}
+
+<p style="text-align: center;"><a href="https://postimg.cc/w3QhfXqC"><img src="https://i.postimg.cc/Y2JbSRJC/smaller.gif" alt="smaller.gif" /></a></p>
 
 
 ## Credit
