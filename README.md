@@ -45,7 +45,7 @@ I have created a detailed blog post on the implementation: https://blog.mphomphe
 
 The first of many...
 
-[![Watch the video](https://user-images.githubusercontent.com/7910856/88237011-9cfd1a00-cc7e-11ea-99ef-224f6660fe6b.gif)](https://www.youtube.com/watch?v=6r6foGbCHQ0)
+[![Watch the video](https://user-images.githubusercontent.com/7910856/88237923-a8514500-cc80-11ea-9cc8-0692eb0c4d6e.gif)](https://www.youtube.com/watch?v=6r6foGbCHQ0)
 
 ## Hardware Requirement
 
@@ -153,7 +153,7 @@ xhost -;
 - `--device /dev/snd`: Enable sound from container
 - `--device /dev/video0`: Share webcam with container
 
-![ezgif-4-19909370eaea](https://user-images.githubusercontent.com/7910856/88237011-9cfd1a00-cc7e-11ea-99ef-224f6660fe6b.gif)
+![ezgif-4-993045572ebb](https://user-images.githubusercontent.com/7910856/88237923-a8514500-cc80-11ea-9cc8-0692eb0c4d6e.gif)
 
 ### Packaging the Application
 We can use the [Deployment Manager](https://docs.openvinotoolkit.org/latest/_docs_install_guides_deployment_manager_tool.html) present in OpenVINO to create a runtime package from our application. These packages can be easily sent to other hardware devices to be deployed.
