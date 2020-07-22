@@ -89,6 +89,42 @@ bash -c "/opt/intel/openvino/deployment_tools/open_model_zoo/tools/downloader/do
 ## Usage
 
 ```bash
+$ python main.py -h
+
+usage: main.py [-h] -f FACE_MODEL -m MASK_MODEL -i INPUT [-d DEVICE]
+               [--face_prob_threshold FACE_PROB_THRESHOLD]
+               [--mask_prob_threshold MASK_PROB_THRESHOLD] [--enable-speech]
+               [--tts TTS] [--ffmpeg] [--show-bbox] [--debug]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FACE_MODEL, --face-model FACE_MODEL
+                        Path to an xml file with a trained model.
+  -m MASK_MODEL, --mask-model MASK_MODEL
+                        Path to an xml file with a trained model.
+  -i INPUT, --input INPUT
+                        Path to image or video file or 'cam' for Webcam.
+  -d DEVICE, --device DEVICE
+                        Specify the target device to infer on: CPU, GPU, FPGA
+                        or MYRIAD is acceptable. Sample will look for a
+                        suitable plugin for device specified (CPU by default)
+  --face_prob_threshold FACE_PROB_THRESHOLD
+                        Probability threshold for face detections filtering
+                        (Default: 0.8)
+  --mask_prob_threshold MASK_PROB_THRESHOLD
+                        Probability threshold for face mask detections
+                        filtering(Default: 0.3)
+  --enable-speech       Enable speech notification.
+  --tts TTS             Text-to-Speech, used for notification.
+  --ffmpeg              Flush video to FFMPEG.
+  --show-bbox           Show bounding box and stats on screen [debugging].
+  --debug               Show output on screen [debugging].
+
+```
+
+### Example Usage
+
+```bash
 xhost +;
 docker run --rm -ti \
 --volume "$PWD":/app \
@@ -100,9 +136,10 @@ mmphego/intel-openvino \
 bash -c \
 "source /opt/intel/openvino/bin/setupvars.sh && \
 python main.py \
-    --face-model models/face-detection-adas-0001.xml \
-    --mask-model models/face_mask.xml \
+    --face-model models/face-detection-adas-0001 \
+    --mask-model models/face_mask \
     --debug \
+    --show-bbox \
     -i resources/mask.mp4"
 xhost -;
 ```
@@ -115,7 +152,28 @@ xhost -;
 
 <p style="text-align: center;"><a href="https://postimg.cc/w3QhfXqC"><img src="https://i.postimg.cc/Y2JbSRJC/smaller.gif" alt="smaller.gif" /></a></p>
 
+If you have found this useful, please donate by clicking on the image below:
+[![image](https://user-images.githubusercontent.com/7910856/88235803-e4ce7200-cc7b-11ea-8218-c3c04810052c.png)](https://paypal.me/mmphego)
 
+### Packaging the Application
+We can use the [Deployment Manager](https://docs.openvinotoolkit.org/latest/_docs_install_guides_deployment_manager_tool.html) present in OpenVINO to create a runtime package from our application. These packages can be easily sent to other hardware devices to be deployed.
+
+To deploy the application to various devices using the Deployment Manager run the steps below.
+
+Note: Choose from the devices listed below.
+
+```bash
+DEVICE='cpu' # or gpu, vpu, gna, hddl
+docker run --rm -ti \
+--volume "$PWD":/app \
+mmphego/intel-openvino bash -c "\
+  python /opt/intel/openvino/deployment_tools/tools/deployment_manager/deployment_manager.py \
+  --targets ${DEVICE} \
+  --user_data /app \
+  --output_dir . \
+  --archive_name face_mask_detection_${DEVICE}"
+
+```
 ## Credit
 
 - Face mask detection caffe model: [https://github.com/didi/maskdetection](https://github.com/didi/maskdetection)
