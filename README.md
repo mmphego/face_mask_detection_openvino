@@ -153,7 +153,9 @@ xhost -;
 <p style="text-align: center;"><a href="https://postimg.cc/w3QhfXqC"><img src="https://i.postimg.cc/Y2JbSRJC/smaller.gif" alt="smaller.gif" /></a></p>
 
 If you have found this useful, please donate by clicking on the image below:
+
 [![image](https://user-images.githubusercontent.com/7910856/88235803-e4ce7200-cc7b-11ea-8218-c3c04810052c.png)](https://paypal.me/mmphego)
+
 
 ### Packaging the Application
 We can use the [Deployment Manager](https://docs.openvinotoolkit.org/latest/_docs_install_guides_deployment_manager_tool.html) present in OpenVINO to create a runtime package from our application. These packages can be easily sent to other hardware devices to be deployed.
@@ -174,6 +176,7 @@ mmphego/intel-openvino bash -c "\
   --archive_name face_mask_detection_${DEVICE}"
 
 ```
+
 ## Credit
 
 - Face mask detection caffe model: [https://github.com/didi/maskdetection](https://github.com/didi/maskdetection)
