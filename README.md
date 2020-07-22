@@ -18,10 +18,10 @@ By utilizing pre-trained models and Intel OpenVINO toolkit with OpenCV. This ena
 This application executes 2 parallel infer requests for the Face Mask Detection and Face Detection networks that run simultaneously.
 
 Using a set of the following pre-trained models:
-- face-detection-adas-0001, which is a primary detection network for finding faces.
+- [face-detection-adas-0001](https://docs.openvinotoolkit.org/latest/_models_intel_face_detection_adas_0001_description_face_detection_adas_0001.html), which is a primary detection network for finding faces.
 - face-mask-detection, which is a pretrained model for detecting a mask.
 
-This application can be improved and then integrated with CCTV or other types cameras to detect and identify people without masks in public areas such as shopping centers and etc. This the ever increasing COVID-19 cases world-wide these application could be useful in controlling the spread of the virus.
+This application can be improved and then integrated with CCTV or other types cameras to detect and identify people without masks in public areas such as shopping centres and etc. This the ever increasing COVID-19 cases world-wide these application could be useful in controlling the spread of the virus.
 
 ![Screenshot from 2020-06-01 22-21-47](https://user-images.githubusercontent.com/7910856/83451683-a8d71780-a457-11ea-8eae-185725fefcc9.png)
 
@@ -31,21 +31,25 @@ OpenVino (OpenVisual Inferencing and Neural Network Optimization) is toolkit to 
 
 You might also be interested on reading about [AI At The Edge - An Introduction To Intel OpenVINO Toolkit.](https://blog.mphomphego.co.za/blog/2020/05/25/AI-at-the-Edge-An-introduction-to-Intel-OpenVINO-Toolkit.html)
 
+## Support
+If you have found this useful, please donate by clicking on the image below:
+
+[![image](https://user-images.githubusercontent.com/7910856/88235803-e4ce7200-cc7b-11ea-8218-c3c04810052c.png)](https://paypal.me/mmphego)
 
 ### Tutorial
 #### Blog Post
 
-I have created a detailed blogpost on the implemetation: https://blog.mphomphego.co.za/blog/2020/06/02/Face-Mask-Detection-using-Intel-OpenVINO-and-OpenCV.html
+I have created a detailed blog post on the implementation: https://blog.mphomphego.co.za/blog/2020/06/02/Face-Mask-Detection-using-Intel-OpenVINO-and-OpenCV.html
 
 #### YouTube Tutorial
 
 The first of many...
 
-[![Watch the video](https://img.youtube.com/vi/6r6foGbCHQ0/maxresdefault.jpg)](https://www.youtube.com/watch?v=6r6foGbCHQ0)
+[![Watch the video](https://user-images.githubusercontent.com/7910856/88237011-9cfd1a00-cc7e-11ea-99ef-224f6660fe6b.gif)](https://www.youtube.com/watch?v=6r6foGbCHQ0)
 
 ## Hardware Requirement
 
-- Minimum Intel Gen6 processors
+- Minimum Intel Gen 6 processors
 
 
 ## Installation
@@ -149,13 +153,7 @@ xhost -;
 - `--device /dev/snd`: Enable sound from container
 - `--device /dev/video0`: Share webcam with container
 
-
-<p style="text-align: center;"><a href="https://postimg.cc/w3QhfXqC"><img src="https://i.postimg.cc/Y2JbSRJC/smaller.gif" alt="smaller.gif" /></a></p>
-
-If you have found this useful, please donate by clicking on the image below:
-
-[![image](https://user-images.githubusercontent.com/7910856/88235803-e4ce7200-cc7b-11ea-8218-c3c04810052c.png)](https://paypal.me/mmphego)
-
+![ezgif-4-19909370eaea](https://user-images.githubusercontent.com/7910856/88237011-9cfd1a00-cc7e-11ea-99ef-224f6660fe6b.gif)
 
 ### Packaging the Application
 We can use the [Deployment Manager](https://docs.openvinotoolkit.org/latest/_docs_install_guides_deployment_manager_tool.html) present in OpenVINO to create a runtime package from our application. These packages can be easily sent to other hardware devices to be deployed.
