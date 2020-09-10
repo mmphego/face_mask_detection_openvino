@@ -21,6 +21,9 @@ __all__ = [
 ]
 
 
+COLOR = {"Green": (0, 255, 0), "Red": (0, 0, 255)}
+
+
 class InvalidModel(Exception):
     pass
 
@@ -114,7 +117,9 @@ class Base(ABC):
                 request_id
             ].get_perf_counts()
             predict_end_time = float(time.time() - predict_start_time) * 1000
-            bbox, _ = self.preprocess_output(pred_result, image, show_bbox=show_bbox)
+            bbox, _ = self.preprocess_output(
+                pred_result, image, show_bbox=show_bbox, **kwargs
+            )
             return (predict_end_time, bbox)
 
     @abstractmethod
@@ -139,7 +144,7 @@ class Base(ABC):
             image, text, position, cv2.FONT_HERSHEY_COMPLEX, font_size, color, 1,
         )
 
-    def preprocess_input(self, image, height=None, width=None):
+    def preprocess_input(self, image, height=None, width=None, **kwargs):
         """Helper function for processing frame"""
         if (height and width) is None:
             height, width = self.input_shape[2:]
@@ -166,7 +171,7 @@ class Face_Detection(Base):
             model_name, source_width, source_height, device, threshold, extensions,
         )
 
-    def preprocess_output(self, inference_results, image, show_bbox=False):
+    def preprocess_output(self, inference_results, image, show_bbox=False, **kwargs):
         """Draw bounding boxes onto the Face Detection frame."""
         if not (self._init_image_w and self._init_image_h):
             raise RuntimeError("Initial image width and height cannot be None.")
@@ -183,7 +188,7 @@ class Face_Detection(Base):
                 ymax = int(box[6] * self._init_image_h)
                 coords.append((xmin, ymin, xmax, ymax))
                 if show_bbox:
-                    self.draw_output(image, xmin, ymin, xmax, ymax)
+                    self.draw_output(image, xmin, ymin, xmax, ymax, **kwargs)
         return coords, image
 
     @staticmethod
@@ -193,43 +198,38 @@ class Face_Detection(Base):
         ymin,
         xmax,
         ymax,
-        label="Person's Face",
-        bbox_color=(0, 255, 0),
+        label="Person",
         padding_size=(0.05, 0.25),
-        text_color=(255, 255, 255),
-        text_scale=2,
-        text_thickness=2,
+        scale=4,
+        thickness=4,
+        **kwargs,
     ):
+        _label = None
+        if kwargs.get("mask_detected"):
+            print(float(kwargs.get("mask_detected")))
+            _label = (
+                (f"{label} Wearing Mask", COLOR["Green"])
+                if float(kwargs.get("mask_detected")) > kwargs.get("threshold", 0.2)
+                else (f"{label} NOT wearing a Mask!!!", COLOR["Red"])
+            )
+
+        label = _label if _label is not None else (label, COLOR["Green"])
 
         cv2.rectangle(
-            image, (xmin, ymin), (xmax, ymax,), color=bbox_color, thickness=2,
+            image, (xmin, ymin), (xmax, ymax,), color=label[1], thickness=thickness,
         )
-
         ((label_width, label_height), _) = cv2.getTextSize(
-            label,
-            cv2.FONT_HERSHEY_PLAIN,
-            fontScale=text_scale,
-            thickness=text_thickness,
+            label[0], cv2.FONT_HERSHEY_PLAIN, fontScale=scale, thickness=thickness,
         )
 
-        cv2.rectangle(
-            image,
-            (xmin, ymin),
-            (
-                int(xmin + label_width + label_width * padding_size[0]),
-                int(ymin + label_height + label_height * padding_size[1]),
-            ),
-            color=bbox_color,
-            thickness=cv2.FILLED,
-        )
         cv2.putText(
             image,
-            label,
-            org=(xmin, int(ymin + label_height + label_height * padding_size[1]),),
+            label[0],
+            org=(image.shape[0] // 2, image.shape[1] // 3),
             fontFace=cv2.FONT_HERSHEY_PLAIN,
-            fontScale=text_scale,
-            color=text_color,
-            thickness=text_thickness,
+            fontScale=scale,
+            color=label[1],
+            thickness=thickness,
         )
 
 
@@ -251,26 +251,9 @@ class Mask_Detection(Base):
 
     def preprocess_output(self, inference_results, image, show_bbox=False, **kwargs):
         flattened_predictions = np.vstack(inference_results).ravel()
-        if show_bbox:
-            self.draw_output(image, flattened_predictions)
         return flattened_predictions, image
 
     def draw_output(
-        self, image, inference_results, color={"Red": (0, 255, 0), "Green": (0, 0, 255)}
+        self, image, inference_results, **kwargs,
     ):
-        label = (
-            ("Mask", color["Red"])
-            if float(inference_results) > self.threshold
-            else ("No Mask", color["Green"])
-        )
-        position = (int(image.shape[1] / 2 - 250 / 2), int(image.shape[0] / 2))
-
-        cv2.putText(
-            image,
-            label[0],
-            position,
-            cv2.FONT_HERSHEY_SIMPLEX,
-            fontScale=2,
-            color=label[1],
-            thickness=5,
-        )
+        pass

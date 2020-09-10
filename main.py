@@ -196,6 +196,7 @@ def arg_parser():
     )
     parser.add_argument(
         "--tts",
+        type=str,
         default="Please wear your MASK!!",
         help="Text-to-Speech, used for notification.",
     )
@@ -230,7 +231,6 @@ def main(args):
         # TODO: Add args for selecting language, accent and male/female voice
         engine = UKEnglishMale()
         speak = engine.get_mp3(args.tts)
-
     # Initialise the class
     face_detection = Face_Detection(
         model_name=args.face_model,
@@ -247,12 +247,15 @@ def main(args):
 
     try:
         count = 0
+        face_detect_infer_time = 0
+        mask_detect_infer_time = 0
+        mask_detected = -1
         # TODO: Convert to contextmanager
         for frame in video_feed.next_frame():
             count += 1
 
             face_detect_infer_time, face_bboxes = face_detection.predict(
-                frame, show_bbox=args.show_bbox
+                frame, show_bbox=args.show_bbox, mask_detected=mask_detected
             )
             if face_bboxes:
                 for face_bbox in face_bboxes:
@@ -273,13 +276,11 @@ def main(args):
                     # ensure the face width and height are sufficiently large
                     if face_height < 20 or face_width < 20:
                         continue
-
-                    mask_detect_infer_time, mask_bboxes = mask_detection.predict(
-                        face, show_bbox=args.show_bbox
+                    mask_detect_infer_time, mask_detected = mask_detection.predict(
+                        face, show_bbox=args.show_bbox, frame=frame
                     )
-
                     if int(count) % 200 == 1 and args.enable_speech:
-                        engine.play_mp3(mp3_file)
+                        engine.play_mp3(speak)
 
             if args.debug:
                 text = f"Face Detection Inference time: {face_detect_infer_time:.3f} ms"
