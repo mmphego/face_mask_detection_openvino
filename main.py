@@ -280,7 +280,7 @@ def main(args):
                     if (
                         int(count) % 200 == 1
                         and args.enable_speech
-                        and float(mask_detected) > args.mask_prob_threshold
+                        and float(mask_detected) < args.mask_prob_threshold
                     ):
                         engine.play_mp3(speak)
 
