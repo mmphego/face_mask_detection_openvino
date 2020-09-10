@@ -222,6 +222,7 @@ class Face_Detection(Base):
                 else (f"{label} NOT wearing a Mask!!!", COLOR["Red"])
             )
             # print(_label)
+
         label = _label if _label is not None else (label, COLOR["Green"])
 
         cv2.rectangle(
