@@ -197,14 +197,13 @@ class Face_Detection(Base):
                 coords.append((xmin, ymin, xmax, ymax))
                 if show_bbox:
                     self.draw_output(
-                        image, self.threshold, xmin, ymin, xmax, ymax, **kwargs
+                        image, xmin, ymin, xmax, ymax, **kwargs
                     )
         return coords, image
 
     @staticmethod
     def draw_output(
         image,
-        threshold,
         xmin,
         ymin,
         xmax,
@@ -219,9 +218,10 @@ class Face_Detection(Base):
         if kwargs.get("mask_detected"):
             _label = (
                 (f"{label} Wearing Mask", COLOR["Green"])
-                if float(kwargs.get("mask_detected")) > kwargs.get("threshold", threshold)
+                if float(kwargs.get("mask_detected")) > kwargs.get("threshold", .1)
                 else (f"{label} NOT wearing a Mask!!!", COLOR["Red"])
             )
+            # print(_label)
         label = _label if _label is not None else (label, COLOR["Green"])
 
         cv2.rectangle(

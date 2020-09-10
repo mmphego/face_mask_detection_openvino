@@ -277,6 +277,7 @@ def main(args):
                     mask_detect_infer_time, mask_detected = mask_detection.predict(
                         face, show_bbox=args.show_bbox, frame=frame
                     )
+                    print(mask_detected)
                     if (
                         int(count) % 200 == 1
                         and args.enable_speech
