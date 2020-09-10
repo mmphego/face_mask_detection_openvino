@@ -242,11 +242,11 @@ def main(args):
         threshold=args.mask_prob_threshold,
     )
 
+    count = 0
+    face_detect_infer_time = 0
+    mask_detect_infer_time = 0
+    mask_detected = -1
     try:
-        count = 0
-        face_detect_infer_time = 0
-        mask_detect_infer_time = 0
-        mask_detected = -1
         # TODO: Convert to contextmanager
         for frame in video_feed.next_frame():
             count += 1
