@@ -1,19 +1,17 @@
-import os
 import math
+import os
+import subprocess
 import sys
 import time
-import subprocess
-
 from abc import ABC, abstractmethod
 from pathlib import Path
 
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
-
+import numpy as np
 from loguru import logger
-from openvino.inference_engine import IENetwork, IECore, get_version
 
+from openvino.inference_engine import IECore, IENetwork, get_version
 
 __all__ = [
     "Face_Detection",
@@ -27,11 +25,13 @@ COLOR = {"Green": (0, 255, 0), "Red": (0, 0, 255)}
 def openvino_version_check():
     version = tuple(map(int, get_version().split(".")))[:2]
     if version != (2, 1):
-        msg = (f"OpenVINO version: {version!r} not compatible with this library, "
+        msg = (
+            f"OpenVINO version: {version!r} not compatible with this library, "
             f"expected version: 2.1.xxx"
         )
         logger.warning(msg)
         raise RuntimeError(msg)
+
 
 class InvalidModel(Exception):
     pass
@@ -84,9 +84,7 @@ class Base(ABC):
                 )
             except AttributeError:
                 logger.warn("Using an old version of OpenVINO, consider updating it!")
-                model = IENetwork(
-                    model=self.model_structure, weights=self.model_weights
-                )
+                model = IENetwork(model=self.model_structure, weights=self.model_weights)
         except Exception:
             raise ValueError(
                 "Could not Initialise the network. "

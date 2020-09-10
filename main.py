@@ -3,17 +3,15 @@
 import mimetypes
 import os
 import time
-
 from argparse import ArgumentParser
 
 import cv2
 import numpy as np
-
 from loguru import logger
 from responsive_voice.voices import UKEnglishMale
-from tqdm import tqdm
 
 from inference import Face_Detection, Mask_Detection
+from tqdm import tqdm
 
 
 class FormatNotSupported(Exception):
@@ -188,8 +186,7 @@ def arg_parser():
         "--mask_prob_threshold",
         type=float,
         default=0.3,
-        help="Probability threshold for face mask detections filtering"
-        "(Default: 0.3)",
+        help="Probability threshold for face mask detections filtering" "(Default: 0.3)",
     )
     parser.add_argument(
         "--enable-speech", action="store_true", help="Enable speech notification.",
@@ -276,21 +273,24 @@ def main(args):
                     # ensure the face width and height are sufficiently large
                     if face_height < 20 or face_width < 20:
                         continue
+
                     mask_detect_infer_time, mask_detected = mask_detection.predict(
                         face, show_bbox=args.show_bbox, frame=frame
                     )
-                    if int(count) % 200 == 1 and args.enable_speech:
+                    if (
+                        int(count) % 200 == 1
+                        and args.enable_speech
+                        and float(mask_detected) > args.mask_prob_threshold
+                    ):
                         engine.play_mp3(speak)
 
             if args.debug:
                 text = f"Face Detection Inference time: {face_detect_infer_time:.3f} ms"
-                face_detection.add_text(
-                    text, frame, (15, video_feed.source_height - 80)
+                face_detection.add_text(text, frame, (15, video_feed.source_height - 80))
+                text = (
+                    f"Face Mask Detection Inference time: {mask_detect_infer_time:.3f} ms"
                 )
-                text = f"Face Mask Detection Inference time: {mask_detect_infer_time:.3f} ms"
-                mask_detection.add_text(
-                    text, frame, (15, video_feed.source_height - 60)
-                )
+                mask_detection.add_text(text, frame, (15, video_feed.source_height - 60))
 
                 video_feed.show(video_feed.resize(frame))
 
