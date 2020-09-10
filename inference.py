@@ -24,7 +24,15 @@ __all__ = [
 COLOR = {"Green": (0, 255, 0), "Red": (0, 0, 255)}
 
 
-import IPython; globals().update(locals()); IPython.embed(header='Python Debugger')
+def openvino_version_check():
+    version = tuple(map(int, get_version().split(".")))[:2]
+    if version != (2, 1):
+        msg = (f"OpenVINO version: {version!r} not compatible with this library, "
+            f"expected version: 2.1.xxx"
+        )
+        logger.warning(msg)
+        raise RuntimeError(msg)
+
 class InvalidModel(Exception):
     pass
 
@@ -47,6 +55,7 @@ class Base(ABC):
             Path(self.model_weights).absolute().exists()
             and Path(self.model_structure).absolute().exists()
         )
+        openvino_version_check()
 
         self.device = device
         self.threshold = threshold
@@ -201,8 +210,8 @@ class Face_Detection(Base):
         ymax,
         label="Person",
         padding_size=(0.05, 0.25),
-        scale=4,
-        thickness=4,
+        scale=2,
+        thickness=2,
         **kwargs,
     ):
         _label = None
@@ -226,7 +235,7 @@ class Face_Detection(Base):
         cv2.putText(
             image,
             label[0],
-            org=(image.shape[0] // 2, image.shape[1] // 3),
+            org=(image.shape[0] // 3, image.shape[1] // 3),
             fontFace=cv2.FONT_HERSHEY_PLAIN,
             fontScale=scale,
             color=label[1],
