@@ -252,7 +252,7 @@ class Mask_Detection(Base):
         source_width=None,
         source_height=None,
         device="CPU",
-        threshold=0.60,
+        threshold=0.30,
         extensions=None,
     ):
         super().__init__(
