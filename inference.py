@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from loguru import logger
-from openvino.inference_engine import IENetwork, IECore
+from openvino.inference_engine import IENetwork, IECore, get_version
 
 
 __all__ = [
@@ -24,6 +24,7 @@ __all__ = [
 COLOR = {"Green": (0, 255, 0), "Red": (0, 0, 255)}
 
 
+import IPython; globals().update(locals()); IPython.embed(header='Python Debugger')
 class InvalidModel(Exception):
     pass
 
