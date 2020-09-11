@@ -1,7 +1,4 @@
-import math
 import os
-import subprocess
-import sys
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -102,7 +99,8 @@ class Base(ABC):
             )
             self._model_load_time = (time.time() - start_time) * 1000
             logger.info(
-                f"Model: {self.model_structure} took {self._model_load_time:.3f} ms to load."
+                f"Model: {self.model_structure} took "
+                f"{self._model_load_time:.3f} ms to load."
             )
 
     def predict(self, image, request_id=0, show_bbox=False, **kwargs):
@@ -143,7 +141,6 @@ class Base(ABC):
     @staticmethod
     def plot_frame(image):
         """Helper function for finding image coordinates/px"""
-        img = image[:, :, 0]
         plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
         plt.show()
 
@@ -196,9 +193,7 @@ class Face_Detection(Base):
                 ymax = int(box[6] * self._init_image_h)
                 coords.append((xmin, ymin, xmax, ymax))
                 if show_bbox:
-                    self.draw_output(
-                        image, xmin, ymin, xmax, ymax, **kwargs
-                    )
+                    self.draw_output(image, xmin, ymin, xmax, ymax, **kwargs)
         return coords, image
 
     @staticmethod
@@ -218,7 +213,7 @@ class Face_Detection(Base):
         if kwargs.get("mask_detected"):
             _label = (
                 (f"{label} Wearing Mask", COLOR["Green"])
-                if float(kwargs.get("mask_detected")) > kwargs.get("threshold", .1)
+                if float(kwargs.get("mask_detected")) > kwargs.get("threshold", 0.1)
                 else (f"{label} NOT wearing a Mask!!!", COLOR["Red"])
             )
             # print(_label)

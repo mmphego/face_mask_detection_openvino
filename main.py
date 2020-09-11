@@ -2,11 +2,9 @@
 
 import mimetypes
 import os
-import time
 from argparse import ArgumentParser
 
 import cv2
-import numpy as np
 from loguru import logger
 from responsive_voice.voices import UKEnglishMale
 
@@ -21,7 +19,8 @@ class FormatNotSupported(Exception):
 class InputFeeder:
     def __init__(self, input_file=None):
         """
-        This class can be used to feed input from an image, webcam, or video to your model.
+        This class can be used to feed input from an image, webcam, or video to your
+        model.
 
         Parameters
         ----------
@@ -105,7 +104,7 @@ class InputFeeder:
         out_video = cv2.VideoWriter(
             os.path.join(output_path, filename),
             cv2.VideoWriter_fourcc(*"avc1"),
-            fps,
+            self.fps,
             (self.source_width, self.source_height),
             True,
         )
@@ -256,10 +255,11 @@ def main(args):
             )
             if face_bboxes:
                 for face_bbox in face_bboxes:
-                    # Useful resource: https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
+                    # Useful resource:
+                    # https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
 
-                    # Face bounding box coordinates cropped from the face detection inference
-                    # are face_bboxes i.e `xmin, ymin, xmax, ymax`
+                    # Face bounding box coordinates cropped from the face detection
+                    # inference are face_bboxes i.e `xmin, ymin, xmax, ymax`
                     # Therefore the face can be cropped by:
                     # frame[face_bbox[1]:face_bbox[3], face_bbox[0]:face_bbox[2]]
 
