@@ -129,29 +129,8 @@ optional arguments:
 ### Example Usage
 
 ```bash
-xhost +;
-docker run --rm -ti \
---volume "$PWD":/app \
---env DISPLAY=$DISPLAY \
---volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
---device /dev/snd \
---device /dev/video0 \
-mmphego/intel-openvino \
-bash -c \
-"source /opt/intel/openvino/bin/setupvars.sh && \
-python main.py \
-    --face-model models/face-detection-adas-0001 \
-    --mask-model models/face_mask \
-    --debug \
-    --show-bbox \
-    -i resources/mask.mp4"
-xhost -;
+make example
 ```
-
-- `--env DISPLAY=$DISPLAY`: Enables GUI applications
-- `--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"`: Enable GUI applications
-- `--device /dev/snd`: Enable sound from container
-- `--device /dev/video0`: Share webcam with container
 
 ![ezgif-4-993045572ebb](https://user-images.githubusercontent.com/7910856/88237923-a8514500-cc80-11ea-9cc8-0692eb0c4d6e.gif)
 
