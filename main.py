@@ -1,141 +1,11 @@
 #!/usr/bin/env python3
 
-import mimetypes
-import os
 from argparse import ArgumentParser
 
-import cv2
-from loguru import logger
 from responsive_voice.voices import UKEnglishMale
 
-from inference import Face_Detection, Mask_Detection
-from tqdm import tqdm
-
-
-class FormatNotSupported(Exception):
-    pass
-
-
-class InputFeeder:
-    def __init__(self, input_file=None):
-        """
-        This class can be used to feed input from an image, webcam, or video to your
-        model.
-
-        Parameters
-        ----------
-        input_file: str
-            The file that contains the input image or video file.
-            Leave empty for cam input_type.
-
-        Example
-        -------
-        ```
-            feed=InputFeeder(input_file='video.mp4')
-            for batch in feed.next_frame():
-                do_something(batch)
-            feed.close()
-        ```
-        """
-        self.input_file = input_file
-        assert isinstance(self.input_file, str)
-        self.check_file_exists(self.input_file)
-        try:
-            self._input_type, _ = mimetypes.guess_type(self.input_file)
-            assert isinstance(self._input_type, str)
-        except AssertionError:
-            self._input_type = ""
-        self._progress_bar = None
-        self.load_data()
-
-    def load_data(self):
-        if "video" in self._input_type:
-            self.cap = cv2.VideoCapture(self.input_file)
-        elif "image" in self._input_type:
-            self.cap = cv2.imread(self.input_file)
-        elif "cam" in self.input_file.lower():
-            self._input_type = self.input_file
-            self.cap = cv2.VideoCapture(0)
-        else:
-            msg = f"Source: {self.input_file} not supported!"
-            logger.warn(msg)
-            raise FormatNotSupported(msg)
-        logger.info(f"Loaded input source type: {self._input_type}")
-
-    @staticmethod
-    def check_file_exists(file):
-        if "cam" in file:
-            return
-
-        if not os.path.exists(os.path.abspath(file)):
-            raise FileNotFoundError(f"{file} does not exist.")
-
-    @property
-    def source_width(self):
-        return int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-
-    @property
-    def source_height(self):
-        return int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    @property
-    def video_len(self):
-        return int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-    @property
-    def fps(self):
-        return int(self.cap.get(cv2.CAP_PROP_FPS))
-
-    @property
-    def progress_bar(self):
-        if not self._progress_bar:
-            self._progress_bar = tqdm(total=int(self.video_len - self.fps + 1))
-        return self._progress_bar
-
-    def resize(self, frame, height=None, width=None):
-        if (height and width) is None:
-            width, height = (self.source_width // 2, self.source_height // 2)
-        return cv2.resize(frame, (width, height))
-
-    def show(self, frame, frame_name="video"):
-        cv2.imshow(frame_name, frame)
-
-    def write_video(self, output_path=".", filename="output_video.mp4"):
-        out_video = cv2.VideoWriter(
-            os.path.join(output_path, filename),
-            cv2.VideoWriter_fourcc(*"avc1"),
-            self.fps,
-            (self.source_width, self.source_height),
-            True,
-        )
-        return out_video
-
-    # TODO: Convert to contextmanager class
-    def next_frame(self, quit_key="q"):
-        """Returns the next image from either a video file or webcam."""
-        while self.cap.isOpened():
-            self.progress_bar.update(1)
-            flag = False
-            for _ in range(1):
-                flag, frame = self.cap.read()
-
-            if not flag:
-                break
-            yield frame
-
-            key = cv2.waitKey(1) & 0xFF
-            # if `quit_key` was pressed, break from the loop
-            if key == ord(quit_key):
-                break
-
-    def close(self):
-        """Closes the VideoCapture."""
-        if "image" in self._input_type:
-            self.cap.release()
-        if self.progress_bar:
-            self.progress_bar.close()
-        cv2.destroyAllWindows()
-        logger.info("============ CleanUp! ============")
+from inference import FaceDetection, MaskDetection
+from pyvino_utils import InputFeeder
 
 
 def arg_parser():
@@ -221,21 +91,20 @@ def main(args):
     :return: None
     """
     # Initialise the video stream
-    video_feed = InputFeeder(input_file=args.input)
+    input_feed = InputFeeder(input_feed=args.input)
     # Initialise the speech output
     if args.enable_speech:
         # TODO: Add args for selecting language, accent and male/female voice
         engine = UKEnglishMale()
         speak = engine.get_mp3(args.tts)
     # Initialise the class
-    face_detection = Face_Detection(
+    face_detection = FaceDetection(
         model_name=args.face_model,
-        source_width=video_feed.source_width,
-        source_height=video_feed.source_height,
         device=args.device,
         threshold=args.face_prob_threshold,
+        input_feed=input_feed,
     )
-    mask_detection = Mask_Detection(
+    mask_detection = MaskDetection(
         model_name=args.mask_model,
         device=args.device,
         threshold=args.mask_prob_threshold,
@@ -244,15 +113,16 @@ def main(args):
     count = 0
     face_detect_infer_time = 0
     mask_detect_infer_time = 0
-    mask_detected = -1
+    mask_detected_prob = -1
     try:
         # TODO: Convert to contextmanager
-        for frame in video_feed.next_frame():
+        for frame in input_feed.next_frame():
             count += 1
 
-            face_detect_infer_time, face_bboxes = face_detection.predict(
-                frame, show_bbox=args.show_bbox, mask_detected=mask_detected
+            fd_results = face_detection.predict(
+                frame, show_bbox=args.show_bbox, mask_detected=mask_detected_prob
             )
+            face_bboxes = fd_results["process_output"]["bbox_coord"]
             if face_bboxes:
                 for face_bbox in face_bboxes:
                     # Useful resource:
@@ -268,34 +138,37 @@ def main(args):
                     face = frame[y:h, x:w]
                     (face_height, face_width) = face.shape[:2]
                     # Crop and show face
-                    # video_feed.show(frame[y:h, x:w], "face")
+                    # input_feed.show(frame[y:h, x:w], "face")
 
                     # ensure the face width and height are sufficiently large
                     if face_height < 20 or face_width < 20:
                         continue
 
-                    mask_detect_infer_time, mask_detected = mask_detection.predict(
+                    md_results = mask_detection.predict(
                         face, show_bbox=args.show_bbox, frame=frame
                     )
+                    mask_detected_prob = md_results["process_output"][
+                        "flattened_predictions"
+                    ]
                     if (
                         int(count) % 200 == 1
                         and args.enable_speech
-                        and float(mask_detected) < args.mask_prob_threshold
+                        and float(mask_detected_prob) < args.mask_prob_threshold
                     ):
                         engine.play_mp3(speak)
 
             if args.debug:
                 text = f"Face Detection Inference time: {face_detect_infer_time:.3f} ms"
-                face_detection.add_text(text, frame, (15, video_feed.source_height - 80))
+                input_feed.add_text(text, frame, (15, input_feed.source_height - 80))
                 text = (
                     f"Face Mask Detection Inference time: {mask_detect_infer_time:.3f} ms"
                 )
-                mask_detection.add_text(text, frame, (15, video_feed.source_height - 60))
+                input_feed.add_text(text, frame, (15, input_feed.source_height - 60))
 
-                video_feed.show(video_feed.resize(frame))
+                input_feed.show(input_feed.resize(frame))
 
     finally:
-        video_feed.close()
+        input_feed.close()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,3 @@
+gtts
+responsivevoice
+git+https://github.com/mmphego/pyvino_utils.git

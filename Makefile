@@ -1,8 +1,8 @@
 .ONESHELL:
 
 SHELL := /bin/bash
-DATE_ID := $(shell date +"%y.%m.%d")
-
+# Name of docker image to be built.
+OPENVINO_DOCKER_IMAGE = "$(USER)/$(shell basename $(CURDIR))"
 # Get package name from pwd
 SOURCE_DIR = source /opt/intel/openvino/bin/setupvars.sh
 
@@ -20,26 +20,27 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 
-.PHONY: clean clean-test clean-pyc clean-build help changelog run
-
 help:
 	@python3 -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+clean: clean-build clean-docker clean-pyc clean-test ## Remove all build, test, coverage and Python artefacts
 
-clean-build: ## remove build artifacts
+clean-docker:  ## Remove docker image
+	docker rmi $(OPENVINO_DOCKER_IMAGE)
+
+clean-build: ## Remove build artifacts
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 
-clean-pyc: ## remove Python file artifacts
+clean-pyc: ## Remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
 
-clean-test: ## remove test and coverage artifacts
+clean-test: ## Remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
@@ -52,14 +53,22 @@ formatter: ## Format style with black
 	isort -rc .
 	black -l 90 .
 
-lint: ## check style with flake8
+lint: ## Check style with flake8
 	flake8 --max-line-length 90 .
 
-example: ## Run main.py with example
+build:  ## Build docker image from file.
+	docker build --no-cache -t $(OPENVINO_DOCKER_IMAGE) .
+
+build-cached:  ## Build cached docker image from file.
+	docker build -t $(OPENVINO_DOCKER_IMAGE) .
+
+run-bootstrap: build-cached run ## Run bootstrap example inside the container.
+
+run:  ## Run example
 	xhost +;
 	docker run --rm -ti --volume "$(CURDIR)":/app --env DISPLAY=$(DISPLAY) \
 	--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" --device /dev/snd \
-	--device /dev/video0 mmphego/intel-openvino \
+	--device /dev/video0 $(OPENVINO_DOCKER_IMAGE) \
 	bash -c "source /opt/intel/openvino/bin/setupvars.sh && \
 		python main.py --face-model models/face-detection-adas-0001 \
 		--mask-model models/face_mask \
@@ -67,4 +76,3 @@ example: ## Run main.py with example
 		--debug \
 		--show-bbox \
 		--enable-speech"
-
