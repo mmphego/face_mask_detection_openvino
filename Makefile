@@ -74,5 +74,4 @@ run:  ## Run example
 		--mask-model models/face_mask \
 		-i resources/mask.mp4 \
 		--debug \
-		--show-bbox \
-		--enable-speech"
+		--show-bbox"
